@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Days of the Week - Interactive Learning Lab</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Noto+Sans+Ethiopic:wght@400;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Nunito', 'sans-serif'],
+            fun: ['Fredoka', 'sans-serif'],
+            ethiopic: ['Noto Sans Ethiopic', 'sans-serif']
+          },
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .option-btn {
+      transition: all 0.2s ease-in-out;
+    }
+    .option-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    .locked {
+      cursor: not-allowed;
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-50 via-sky-50 to-amber-50 min-h-screen font-sans text-slate-800 flex flex-col">
+
+  <!-- Header / Nav -->
+  <header class="bg-white/80 backdrop-blur-md sticky top-0 z-40 border-b border-indigo-100 shadow-sm">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-11 h-11 bg-gradient-to-tr from-blue-600 to-indigo-500 rounded-2xl flex items-center justify-center text-white shadow-md shadow-blue-200">
+          <i class="fa-solid fa-calendar-days text-xl"></i>
+        </div>
+        <div>
+          <h1 class="font-fun text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-700 to-indigo-600 bg-clip-text text-transparent">Days of the Week</h1>
+          <p class="text-xs text-slate-500 font-semibold tracking-wide uppercase">Interactive Learning & Assessment</p>
+        </div>
+      </div>
+      
+      <!-- Audio & Voice Status -->
+      <div class="flex items-center gap-3">
+        <button id="toggleAudioBtn" onclick="toggleMute()" class="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold border border-slate-200 bg-slate-50 hover:bg-slate-100 transition shadow-sm" title="Toggle British Accent Narrator">
+          <i id="audioIcon" class="fa-solid fa-volume-high text-indigo-600"></i>
+          <span id="audioLabel" class="hidden sm:inline">British Narrator: Active</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="flex-grow max-w-4xl w-full mx-auto p-4 sm:p-6 flex flex-col justify-center">
+
+    <!-- Screen 1: Registration / Intro Screen -->
+    <section id="screenIntro" class="bg-white rounded-3xl p-6 sm:p-10 shadow-xl border border-indigo-50 transition-all duration-300">
+      <div class="text-center max-w-xl mx-auto mb-8">
+        <div class="inline-block p-3 rounded-full bg-indigo-50 text-indigo-600 mb-3">
+          <i class="fa-solid fa-graduation-cap text-3xl"></i>
+        </div>
+        <h2 class="font-fun text-3xl font-bold text-slate-800 mb-2">Welcome to Your Worksheet!</h2>
+        <p class="text-slate-600">Master the 7 days of the week: After, Before, and Between. Complete all 26 questions to receive your personalized certificate and submit your results.</p>
+      </div>
+
+      <!-- Quick Word Bank Reference -->
+      <div class="mb-8 p-4 bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 rounded-2xl border border-indigo-100">
+        <p class="text-xs font-bold uppercase tracking-wider text-indigo-700 mb-2 flex items-center gap-1.5">
+          <i class="fa-solid fa-bookmark"></i> Reference Days of the Week:
+        </p>
+        <div class="flex flex-wrap gap-2 justify-center font-bold text-sm text-slate-700">
+          <span class="px-3 py-1 bg-white rounded-lg shadow-sm border border-slate-200">Monday</span>
+          <span class="px-3 py-1 bg-white rounded-lg shadow-sm border border-slate-200">Tuesday</span>
+          <span class="px-3 py-1 bg-white rounded-lg shadow-sm border border-slate-200">Wednesday</span>
+          <span class="px-3 py-1 bg-white rounded-lg shadow-sm border border-slate-200">Thursday</span>
+          <span class="px-3 py-1 bg-white rounded-lg shadow-sm border border-slate-200">Friday</span>
+          <span class="px-3 py-1 bg-white rounded-lg shadow-sm border border-slate-200">Saturday</span>
+          <span class="px-3 py-1 bg-white rounded-lg shadow-sm border border-slate-200">Sunday</span>
+        </div>
+      </div>
+
+      <!-- Identification Form -->
+      <form id="studentForm" onsubmit="startQuiz(event)" class="max-w-md mx-auto space-y-4">
+        <div>
+          <label for="studentName" class="block text-sm font-bold text-slate-700 mb-1">
+            <i class="fa-solid fa-user text-indigo-500 mr-1"></i> Full Name <span class="text-rose-500">*</span>
+          </label>
+          <input type="text" id="studentName" required placeholder="e.g. Abebe Bikila" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition font-medium">
+        </div>
+        <div>
+          <label for="studentId" class="block text-sm font-bold text-slate-700 mb-1">
+            <i class="fa-solid fa-id-card text-indigo-500 mr-1"></i> Student ID Number <span class="text-rose-500">*</span>
+          </label>
+          <input type="text" id="studentId" required placeholder="e.g. STU-2026-089" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition font-medium">
+        </div>
+
+        <button type="submit" class="w-full py-4 mt-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-fun font-bold text-lg rounded-2xl shadow-lg shadow-indigo-200 transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2">
+          <span>Start Quiz</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </form>
+    </section>
+
+    <!-- Screen 2: Active Question Card -->
+    <section id="screenQuiz" class="hidden flex-col gap-4">
+      
+      <!-- Top info bar with progress -->
+      <div class="bg-white/90 backdrop-blur rounded-2xl p-4 shadow-sm border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <span id="badgeSection" class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide bg-blue-100 text-blue-800">Part 1: What comes AFTER?</span>
+          <span class="text-sm font-bold text-slate-500" id="questionCounter">Question 1 of 26</span>
+        </div>
+        
+        <!-- Live Mini Score -->
+        <div class="flex items-center gap-4 text-sm font-bold">
+          <div class="text-emerald-600 flex items-center gap-1.5">
+            <i class="fa-solid fa-circle-check"></i> <span id="correctScoreCount">0</span>
+          </div>
+          <div class="text-rose-600 flex items-center gap-1.5">
+            <i class="fa-solid fa-circle-xmark"></i> <span id="incorrectScoreCount">0</span>
+          </div>
+          <div class="text-indigo-600 flex items-center gap-1.5">
+            <i class="fa-solid fa-forward-step"></i> <span id="skippedCount">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Progress bar -->
+      <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+        <div id="quizProgressBar" class="bg-gradient-to-r from-blue-500 to-indigo-600 h-full transition-all duration-300 w-0"></div>
+      </div>
+
+      <!-- Main Question Box -->
+      <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-100 relative">
+        
+        <!-- Audio Narrate Button & Question header -->
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <div>
+            <p id="instructionText" class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Instruction</p>
+            <h3 id="questionText" class="text-xl sm:text-2xl font-bold text-slate-800 font-fun leading-relaxed">
+              Loading question...
+            </h3>
+          </div>
+          <button onclick="readCurrentQuestionAloud()" class="p-3 rounded-2xl bg-indigo-50 hover:bg-indigo-100 text-indigo-600 transition shadow-sm flex-shrink-0" title="Listen to question (British Narrator)">
+            <i class="fa-solid fa-volume-high text-xl"></i>
+          </button>
+        </div>
+
+        <!-- Answer Options Buttons Grid -->
+        <div id="optionsContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-3 my-6">
+          <!-- Dynamically filled with option buttons -->
+        </div>
+
+        <!-- Instant Feedback Card (Hidden by default) -->
+        <div id="feedbackCard" class="hidden mt-6 p-5 rounded-2xl border transition-all duration-300">
+          <div class="flex items-center gap-2.5 font-bold text-base mb-3" id="feedbackTitle">
+            <!-- Icon and status -->
+          </div>
+
+          <!-- Bilingual Elaborated Explanations -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+            <!-- English Explanation -->
+            <div class="bg-white/80 p-3.5 rounded-xl border border-slate-200/60">
+              <span class="inline-flex items-center gap-1 text-xs font-extrabold uppercase text-indigo-600 mb-1">
+                <i class="fa-solid fa-earth-americas"></i> English Explanation
+              </span>
+              <p id="explanationEn" class="text-sm text-slate-700 leading-relaxed font-medium"></p>
+            </div>
+            <!-- Amharic Explanation -->
+            <div class="bg-white/80 p-3.5 rounded-xl border border-slate-200/60 font-ethiopic">
+              <span class="inline-flex items-center gap-1 text-xs font-extrabold uppercase text-emerald-700 mb-1">
+                <i class="fa-solid fa-language"></i> ማብራሪያ (በአማርኛ)
+              </span>
+              <p id="explanationAm" class="text-sm text-slate-700 leading-relaxed font-semibold"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation Buttons: Back, Skip, Jump Next, Finish -->
+        <div class="flex flex-wrap items-center justify-between gap-3 mt-8 pt-6 border-t border-slate-100">
+          <button id="btnBack" onclick="navigatePrev()" class="px-5 py-2.5 rounded-xl border border-slate-300 font-bold text-slate-600 hover:bg-slate-100 transition flex items-center gap-2 text-sm disabled:opacity-40 disabled:cursor-not-allowed">
+            <i class="fa-solid fa-arrow-left"></i>
+            <span>Back</span>
+          </button>
+
+          <div class="flex items-center gap-3">
+            <button id="btnSkip" onclick="skipQuestion()" class="px-5 py-2.5 rounded-xl border border-amber-300 bg-amber-50 text-amber-700 hover:bg-amber-100 font-bold transition flex items-center gap-2 text-sm">
+              <span>Skip / Jump Next</span>
+              <i class="fa-solid fa-forward"></i>
+            </button>
+            <button id="btnNext" onclick="navigateNext()" class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition flex items-center gap-2 text-sm shadow-md shadow-indigo-200">
+              <span id="nextBtnText">Next Question</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Screen 3: Teacher / Student Summary Dashboard & Submission -->
+    <section id="screenResults" class="hidden bg-white rounded-3xl p-6 sm:p-10 shadow-xl border border-slate-100 max-w-3xl mx-auto w-full">
+      
+      <div class="text-center mb-8">
+        <div id="trophyBadge" class="w-20 h-20 mx-auto rounded-3xl bg-amber-100 text-amber-600 flex items-center justify-center text-4xl mb-4 shadow-inner">
+          <i class="fa-solid fa-award"></i>
+        </div>
+        <h2 class="font-fun text-3xl font-bold text-slate-800">Quiz Completed!</h2>
+        <p class="text-slate-600 text-sm mt-1">Assessment Summary & Auto-Graded Report Card</p>
+      </div>
+
+      <!-- Student Credentials Card -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-200 mb-6 text-center">
+        <div>
+          <span class="text-xs uppercase font-bold text-slate-400">Student Name</span>
+          <p id="resStudentName" class="font-bold text-slate-800 truncate">-</p>
+        </div>
+        <div>
+          <span class="text-xs uppercase font-bold text-slate-400">Student ID</span>
+          <p id="resStudentId" class="font-bold text-slate-800 truncate">-</p>
+        </div>
+        <div>
+          <span class="text-xs uppercase font-bold text-slate-400">Final Score</span>
+          <p id="resFinalScore" class="font-bold text-2xl text-indigo-600">0%</p>
+        </div>
+        <div>
+          <span class="text-xs uppercase font-bold text-slate-400">Raw Mark</span>
+          <p id="resRawScore" class="font-bold text-slate-800">0 / 26</p>
+        </div>
+      </div>
+
+      <!-- Category Breakdown -->
+      <div class="mb-6 space-y-3">
+        <h4 class="font-bold text-sm uppercase tracking-wider text-slate-600 flex items-center gap-2">
+          <i class="fa-solid fa-chart-pie text-indigo-500"></i> Part-by-Part Performance
+        </h4>
+        <div id="breakdownContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+          <!-- Dynamically populated breakdown -->
+        </div>
+      </div>
+
+      <!-- Email Submission Box for Teacher -->
+      <div class="p-5 rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 mb-8">
+        <div class="flex items-start gap-3">
+          <div class="p-2.5 rounded-xl bg-blue-600 text-white">
+            <i class="fa-solid fa-envelope-circle-check text-xl"></i>
+          </div>
+          <div class="flex-grow">
+            <h4 class="font-bold text-slate-800">Send Official Score to Teacher</h4>
+            <p class="text-xs text-slate-600 mt-0.5">Click below to automatically compose and send your score report to <strong>mesayferedegn2@gmail.com</strong>.</p>
+            <div class="mt-3 flex flex-wrap gap-2">
+              <button onclick="sendScoreEmail()" class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm transition shadow-md flex items-center gap-2">
+                <i class="fa-solid fa-paper-plane"></i>
+                <span>Send Score via Email</span>
+              </button>
+              <button onclick="copyResultsSummary()" class="px-4 py-2.5 rounded-xl bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold text-sm transition flex items-center gap-2">
+                <i class="fa-solid fa-copy"></i>
+                <span id="copyBtnText">Copy Report</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Retake or Review Action buttons -->
+      <div class="flex flex-col sm:flex-row justify-center gap-3">
+        <button onclick="retakeQuiz()" class="px-6 py-3 rounded-xl border border-indigo-200 bg-white hover:bg-indigo-50 text-indigo-700 font-bold transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-rotate-right"></i>
+          <span>Retake Quiz</span>
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="mt-auto py-4 text-center text-xs text-slate-400 border-t border-slate-100">
+    Interactive Days of the Week Assessment System • Designed with Auto-Grading & Speech Synthesis
+  </footer>
+
+  <!-- Quiz Logic Script -->
+  <script>
+    /* =====================================================================
+       COMPLETE 26 QUESTIONS DATASET AS PER WORKSHEET & ANSWER KEY
+       ===================================================================== */
+    const quizData = [
+      // PART 1: What comes AFTER? (5 questions)
+      {
+        id: 1,
+        part: "Part 1: What comes AFTER?",
+        instruction: "Write the day that comes next.",
+        question: "What day comes after Monday?",
+        options: ["Tuesday", "Sunday", "Wednesday", "Saturday"],
+        correct: "Tuesday",
+        explanationEn: "In the calendar cycle, Tuesday immediately follows Monday.",
+        explanationAm: "ከሰኞ ቀጥሎ ወዲያውኑ የሚመጣው የሳምንቱ ቀን ማክሰኞ ነው።"
+      },
+      {
+        id: 2,
+        part: "Part 1: What comes AFTER?",
+        instruction: "Write the day that comes next.",
+        question: "What day comes after Wednesday?",
+        options: ["Thursday", "Tuesday", "Friday", "Monday"],
+        correct: "Thursday",
+        explanationEn: "Thursday comes directly after Wednesday in standard weekday order.",
+        explanationAm: "ከረቡዕ ቀጥሎ ወዲያውኑ የሚመጣው ቀን ሐሙስ ነው።"
+      },
+      {
+        id: 3,
+        part: "Part 1: What comes AFTER?",
+        instruction: "Write the day that comes next.",
+        question: "The day after Friday is _________________.",
+        options: ["Saturday", "Thursday", "Sunday", "Monday"],
+        correct: "Saturday",
+        explanationEn: "Saturday is the first day of the weekend, coming right after Friday.",
+        explanationAm: "ከአርብ ቀጥሎ የሚመጣው የመጀመሪያው ቅዳሜና እሑድ የእረፍት ቀን ቅዳሜ ነው።"
+      },
+      {
+        id: 4,
+        part: "Part 1: What comes AFTER?",
+        instruction: "Write the day that comes next.",
+        question: "The day after Saturday is _________________.",
+        options: ["Sunday", "Friday", "Monday", "Wednesday"],
+        correct: "Sunday",
+        explanationEn: "Sunday directly follows Saturday before a brand new week begins.",
+        explanationAm: "ከቅዳሜ ቀጥሎ አዲሱ ሳምንት ከመጀመሩ በፊት የሚመጣው ቀን እሑድ ነው።"
+      },
+      {
+        id: 5,
+        part: "Part 1: What comes AFTER?",
+        instruction: "Write the day that comes next.",
+        question: "What day comes after Thursday?",
+        options: ["Friday", "Wednesday", "Saturday", "Sunday"],
+        correct: "Friday",
+        explanationEn: "Friday is the fifth school/work day, coming immediately after Thursday.",
+        explanationAm: "ከሐሙስ ቀጥሎ በቀጥታ የሚከተለው ቀን አርብ ነው።"
+      },
+
+      // PART 2: What comes BEFORE? (5 questions)
+      {
+        id: 6,
+        part: "Part 2: What comes BEFORE?",
+        instruction: "Write the day that was yesterday.",
+        question: "What day comes before Tuesday?",
+        options: ["Monday", "Wednesday", "Sunday", "Saturday"],
+        correct: "Monday",
+        explanationEn: "Monday is the day preceding Tuesday.",
+        explanationAm: "ከማክሰኞ በፊት አስቀድሞ የሚመጣው ቀን ሰኞ ነው።"
+      },
+      {
+        id: 7,
+        part: "Part 2: What comes BEFORE?",
+        instruction: "Write the day that was yesterday.",
+        question: "What day comes before Friday?",
+        options: ["Thursday", "Saturday", "Wednesday", "Tuesday"],
+        correct: "Thursday",
+        explanationEn: "Thursday precedes Friday.",
+        explanationAm: "ከአርብ በፊት ያለው ቀን ሐሙስ ነው።"
+      },
+      {
+        id: 8,
+        part: "Part 2: What comes BEFORE?",
+        instruction: "Write the day that was yesterday.",
+        question: "The day before Sunday is _________________.",
+        options: ["Saturday", "Monday", "Friday", "Thursday"],
+        correct: "Saturday",
+        explanationEn: "Saturday comes just before Sunday at the end of the week.",
+        explanationAm: "ከእሑድ በፊት ያለው ቀን ቅዳሜ ነው።"
+      },
+      {
+        id: 9,
+        part: "Part 2: What comes BEFORE?",
+        instruction: "Write the day that was yesterday.",
+        question: "The day before Thursday is _________________.",
+        options: ["Wednesday", "Friday", "Tuesday", "Monday"],
+        correct: "Wednesday",
+        explanationEn: "Wednesday is the day right before Thursday.",
+        explanationAm: "ከሐሙስ በፊት የሚገኘው ቀን ረቡዕ ነው።"
+      },
+      {
+        id: 10,
+        part: "Part 2: What comes BEFORE?",
+        instruction: "Write the day that was yesterday.",
+        question: "What day comes before Wednesday?",
+        options: ["Tuesday", "Thursday", "Monday", "Sunday"],
+        correct: "Tuesday",
+        explanationEn: "Tuesday comes right before Wednesday in the sequence.",
+        explanationAm: "ከረቡዕ በፊት የሚቀድመው ቀን ማክሰኞ ነው።"
+      },
+
+      // PART 3: What comes BETWEEN? (5 questions)
+      {
+        id: 11,
+        part: "Part 3: What comes BETWEEN?",
+        instruction: "Write the day that is in the middle.",
+        question: "Monday and Wednesday. The day between them is _________________.",
+        options: ["Tuesday", "Sunday", "Thursday", "Friday"],
+        correct: "Tuesday",
+        explanationEn: "Tuesday sits in between Monday and Wednesday (Monday -> Tuesday -> Wednesday).",
+        explanationAm: "በሰኞ እና በረቡዕ መካከል የሚገኘው ቀን ማክሰኞ ነው (ሰኞ -> ማክሰኞ -> ረቡዕ)።"
+      },
+      {
+        id: 12,
+        part: "Part 3: What comes BETWEEN?",
+        instruction: "Write the day that is in the middle.",
+        question: "Friday and Sunday. The day between them is _________________.",
+        options: ["Saturday", "Thursday", "Monday", "Tuesday"],
+        correct: "Saturday",
+        explanationEn: "Saturday separates Friday and Sunday over the weekend.",
+        explanationAm: "በአርብ እና በእሑድ መካከል ያለው ቀን ቅዳሜ ነው።"
+      },
+      {
+        id: 13,
+        part: "Part 3: What comes BETWEEN?",
+        instruction: "Write the day that is in the middle.",
+        question: "Tuesday and Thursday. The day between them is _________________.",
+        options: ["Wednesday", "Monday", "Friday", "Sunday"],
+        correct: "Wednesday",
+        explanationEn: "Wednesday is the midpoint between Tuesday and Thursday.",
+        explanationAm: "በማክሰኞ እና በሐሙስ መካከል ያለው ቀን ረቡዕ ነው።"
+      },
+      {
+        id: 14,
+        part: "Part 3: What comes BETWEEN?",
+        instruction: "Write the day that is in the middle.",
+        question: "Thursday and Saturday. The day between them is _________________.",
+        options: ["Friday", "Wednesday", "Sunday", "Tuesday"],
+        correct: "Friday",
+        explanationEn: "Friday is placed directly between Thursday and Saturday.",
+        explanationAm: "በሐሙስ እና በቅዳሜ መካከል የሚገኘው ቀን አርብ ነው።"
+      },
+      {
+        id: 15,
+        part: "Part 3: What comes BETWEEN?",
+        instruction: "Write the day that is in the middle.",
+        question: "Saturday and Monday. The day between them is _________________.",
+        options: ["Sunday", "Friday", "Tuesday", "Wednesday"],
+        correct: "Sunday",
+        explanationEn: "Sunday connects the weekend into the start of the next week (Saturday -> Sunday -> Monday).",
+        explanationAm: "በቅዳሜ እና በሰኞ መካከል ያለው ቀን እሑድ ነው።"
+      },
+
+      // PART 4: Challenge Questions (School Context) (3 questions)
+      {
+        id: 16,
+        part: "Part 4: Challenge Questions (School Context)",
+        instruction: "Think carefully about the school week.",
+        question: "The first day of school is Monday. The day before school starts is _________________.",
+        options: ["Sunday", "Friday", "Saturday", "Tuesday"],
+        correct: "Sunday",
+        explanationEn: "Since school starts on Monday, the day before it begins is Sunday.",
+        explanationAm: "ትምህርት የሚጀምረው ሰኞ በመሆኑ፤ ከመጀመሩ በፊት ያለው ቀን እሑድ ነው።"
+      },
+      {
+        id: 17,
+        part: "Part 4: Challenge Questions (School Context)",
+        instruction: "Think carefully about the school week.",
+        question: "We don't go to school on Saturday and _________________.",
+        options: ["Sunday", "Friday", "Monday", "Wednesday"],
+        correct: "Sunday",
+        explanationEn: "The typical two weekend days off from school are Saturday and Sunday.",
+        explanationAm: "የሳምንቱ የትምህርት ቤት የእረፍት ቀናት ቅዳሜ እና እሑድ ናቸው።"
+      },
+      {
+        id: 18,
+        part: "Part 4: Challenge Questions (School Context)",
+        instruction: "Think carefully about the school week.",
+        question: "Today is Wednesday. Tomorrow will be _________________.",
+        options: ["Thursday", "Tuesday", "Friday", "Monday"],
+        correct: "Thursday",
+        explanationEn: "Tomorrow means the very next day. The day following Wednesday is Thursday.",
+        explanationAm: "ነገ ማለት የሚቀጥለው ቀን ነው። ዛሬ ረቡዕ ከሆነ ነገ ሐሙስ ይሆናል።"
+      },
+
+      // PART 5: Fill in the Blanks (8 questions)
+      {
+        id: 19,
+        part: "Part 5: Fill in the Blanks",
+        instruction: "Choose the correct word: 'after', 'before', or 'between'.",
+        question: "Tuesday comes _________________ Monday.",
+        options: ["after", "before", "between"],
+        correct: "after",
+        explanationEn: "Monday happens first, so Tuesday comes AFTER Monday.",
+        explanationAm: "ሰኞ ቀድሞ ስለሚመጣ ማክሰኞ ከሰኞ 'በኋላ' (after) ይመጣል።"
+      },
+      {
+        id: 20,
+        part: "Part 5: Fill in the Blanks",
+        instruction: "Choose the correct word: 'after', 'before', or 'between'.",
+        question: "Friday is _________________ Thursday and Saturday.",
+        options: ["between", "after", "before"],
+        correct: "between",
+        explanationEn: "Friday is located in the middle of Thursday and Saturday, so it is BETWEEN them.",
+        explanationAm: "አርብ በሐሙስ እና በቅዳሜ 'መካከል' (between) የሚገኝ ቀን ነው።"
+      },
+      {
+        id: 21,
+        part: "Part 5: Fill in the Blanks",
+        instruction: "Choose the correct word: 'after', 'before', or 'between'.",
+        question: "Saturday comes _________________ Sunday.",
+        options: ["before", "after", "between"],
+        correct: "before",
+        explanationEn: "Saturday comes immediately BEFORE Sunday.",
+        explanationAm: "ቅዳሜ ከእሑድ 'በፊት' (before) የሚመጣ ቀን ነው።"
+      },
+      {
+        id: 22,
+        part: "Part 5: Fill in the Blanks",
+        instruction: "Choose the correct word: 'after', 'before', or 'between'.",
+        question: "Thursday comes _________________ Wednesday.",
+        options: ["after", "before", "between"],
+        correct: "after",
+        explanationEn: "Thursday follows Wednesday, meaning it comes AFTER Wednesday.",
+        explanationAm: "ሐሙስ ከረቡዕ 'በኋላ' (after) የሚመጣ ነው።"
+      },
+      {
+        id: 23,
+        part: "Part 5: Fill in the Blanks",
+        instruction: "Choose the correct word: 'after', 'before', or 'between'.",
+        question: "Wednesday is _________________ Tuesday and Thursday.",
+        options: ["between", "before", "after"],
+        correct: "between",
+        explanationEn: "Wednesday is in the middle of Tuesday and Thursday (BETWEEN).",
+        explanationAm: "ረቡዕ በማክሰኞ እና በሐሙስ 'መካከል' (between) ያለ ቀን ነው።"
+      },
+      {
+        id: 24,
+        part: "Part 5: Fill in the Blanks",
+        instruction: "Choose the correct word: 'after', 'before', or 'between'.",
+        question: "Monday comes _________________ Tuesday.",
+        options: ["before", "after", "between"],
+        correct: "before",
+        explanationEn: "Monday precedes Tuesday in the week order (BEFORE).",
+        explanationAm: "ሰኞ ከማክሰኞ 'በፊት' (before) ይመጣል።"
+      },
+      {
+        id: 25,
+        part: "Part 5: Fill in the Blanks",
+        instruction: "Choose the correct word: 'after', 'before', or 'between'.",
+        question: "Sunday comes _________________ Saturday.",
+        options: ["after", "before", "between"],
+        correct: "after",
+        explanationEn: "Sunday follows Saturday directly (AFTER).",
+        explanationAm: "እሑድ ከቅዳሜ 'በኋላ' (after) የሚከተል ቀን ነው።"
+      },
+      {
+        id: 26,
+        part: "Part 5: Fill in the Blanks",
+        instruction: "Choose the correct word: 'after', 'before', or 'between'.",
+        question: "Tuesday is _________________ Monday and Wednesday.",
+        options: ["between", "after", "before"],
+        correct: "between",
+        explanationEn: "Tuesday is situated in the middle of Monday and Wednesday (BETWEEN).",
+        explanationAm: "ማክሰኞ በሰኞ እና በረቡዕ 'መካከል' (between) የሚገኝ ቀን ነው።"
+      }
+    ];
+
+    /* =====================================================================
+       STATE MANAGEMENT
+       ===================================================================== */
+    let studentData = {
+      name: "",
+      id: ""
+    };
+
+    let currentIndex = 0;
+    // userAnswers maps question index to { selected: string, isCorrect: boolean, skipped: boolean }
+    const userAnswers = {};
+    let isNarratorMuted = false;
+    let britishVoice = null;
+
+    /* =====================================================================
+       TEXT TO SPEECH (Dedicated British Accent Female Narrator)
+       ===================================================================== */
+    function initSpeechEngine() {
+      if ('speechSynthesis' in window) {
+        function loadVoices() {
+          const voices = window.speechSynthesis.getVoices();
+          // Look for British female voice (Google UK English Female, en-GB, Victoria, etc.)
+          britishVoice = voices.find(v => (v.lang === 'en-GB' || v.lang === 'en_GB') && (v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('victoria') || v.name.toLowerCase().includes('sonia') || v.name.toLowerCase().includes('serena') || v.name.toLowerCase().includes('libby') || v.name.toLowerCase().includes('google uk english female'))) 
+                      || voices.find(v => v.lang === 'en-GB' || v.lang === 'en_GB')
+                      || voices.find(v => v.lang.startsWith('en'));
+        }
+
+        loadVoices();
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+          speechSynthesis.onvoiceschanged = loadVoices;
+        }
+      }
+    }
+    initSpeechEngine();
+
+    function speakText(text) {
+      if (isNarratorMuted || !('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel(); // Stop ongoing speech
+
+      const cleanText = text.replace(/_+/g, "blank");
+      const utterance = new SpeechSynthesisUtterance(cleanText);
+      if (britishVoice) {
+        utterance.voice = britishVoice;
+      }
+      utterance.rate = 0.95; // Clear pedagogical pace
+      utterance.pitch = 1.05; // Natural tone
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function toggleMute() {
+      isNarratorMuted = !isNarratorMuted;
+      const icon = document.getElementById("audioIcon");
+      const label = document.getElementById("audioLabel");
+      if (isNarratorMuted) {
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+        icon.className = "fa-solid fa-volume-xmark text-rose-500";
+        label.innerText = "Narrator: Muted";
+      } else {
+        icon.className = "fa-solid fa-volume-high text-indigo-600";
+        label.innerText = "British Narrator: Active";
+        speakText("British voice narration activated.");
+      }
+    }
+
+    function readCurrentQuestionAloud() {
+      const q = quizData[currentIndex];
+      const speech = `${q.instruction}. Question ${currentIndex + 1}: ${q.question}`;
+      speakText(speech);
+    }
+
+    /* =====================================================================
+       FLOW CONTROLLERS
+       ===================================================================== */
+    function startQuiz(e) {
+      e.preventDefault();
+      const nameInput = document.getElementById("studentName").value.trim();
+      const idInput = document.getElementById("studentId").value.trim();
+
+      if (!nameInput || !idInput) {
+        alert("Please enter both your Full Name and Student ID.");
+        return;
+      }
+
+      studentData.name = nameInput;
+      studentData.id = idInput;
+
+      document.getElementById("screenIntro").classList.add("hidden");
+      document.getElementById("screenQuiz").classList.remove("hidden");
+      document.getElementById("screenQuiz").classList.add("flex");
+
+      renderQuestion(0);
+      speakText(`Welcome, ${studentData.name}. Let us begin with Part one.`);
+    }
+
+    function updateLiveCounters() {
+      let correct = 0;
+      let incorrect = 0;
+      let skipped = 0;
+
+      Object.values(userAnswers).forEach(ans => {
+        if (ans.skipped) skipped++;
+        else if (ans.isCorrect) correct++;
+        else incorrect++;
+      });
+
+      document.getElementById("correctScoreCount").innerText = correct;
+      document.getElementById("incorrectScoreCount").innerText = incorrect;
+      document.getElementById("skippedCount").innerText = skipped;
+
+      const progress = ((currentIndex + 1) / quizData.length) * 100;
+      document.getElementById("quizProgressBar").style.width = `${progress}%`;
+    }
+
+    function renderQuestion(index) {
+      currentIndex = index;
+      const q = quizData[index];
+
+      // Update counters & progress
+      document.getElementById("badgeSection").innerText = q.part;
+      document.getElementById("questionCounter").innerText = `Question ${index + 1} of ${quizData.length}`;
+      document.getElementById("instructionText").innerText = q.instruction;
+      document.getElementById("questionText").innerText = q.question;
+      updateLiveCounters();
+
+      // Back button condition
+      const btnBack = document.getElementById("btnBack");
+      btnBack.disabled = (index === 0);
+
+      // Adjust next button label for last question
+      const nextBtnText = document.getElementById("nextBtnText");
+      if (index === quizData.length - 1) {
+        nextBtnText.innerText = "Finish & Submit";
+      } else {
+        nextBtnText.innerText = "Next Question";
+      }
+
+      // Populate options
+      const container = document.getElementById("optionsContainer");
+      container.innerHTML = "";
+
+      const existingRecord = userAnswers[index];
+      const isAnswered = !!existingRecord && !existingRecord.skipped;
+
+      q.options.forEach(opt => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "option-btn w-full p-4 rounded-2xl border-2 font-bold text-left flex items-center justify-between text-base sm:text-lg bg-white border-slate-200 text-slate-700 shadow-sm";
+        btn.innerHTML = `
+          <span>${opt}</span>
+          <span class="icon-indicator text-lg"></span>
+        `;
+
+        if (isAnswered) {
+          btn.disabled = true;
+          btn.classList.add("locked");
+
+          if (opt === q.correct) {
+            // Correct answer styling
+            btn.classList.add("bg-emerald-50", "border-emerald-500", "text-emerald-800");
+            btn.querySelector(".icon-indicator").innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600"></i>`;
+          } else if (opt === existingRecord.selected && !existingRecord.isCorrect) {
+            // Wrong chosen answer styling
+            btn.classList.add("bg-rose-50", "border-rose-500", "text-rose-800");
+            btn.querySelector(".icon-indicator").innerHTML = `<i class="fa-solid fa-circle-xmark text-rose-600"></i>`;
+          } else {
+            btn.classList.add("opacity-50", "border-slate-200");
+          }
+        } else {
+          btn.onclick = () => selectAnswer(index, opt);
+        }
+
+        container.appendChild(btn);
+      });
+
+      // Feedback card logic
+      const feedbackCard = document.getElementById("feedbackCard");
+      if (isAnswered) {
+        showFeedbackUI(existingRecord.isCorrect, q);
+      } else {
+        feedbackCard.classList.add("hidden");
+      }
+
+      // Narrate question aloud
+      readCurrentQuestionAloud();
+    }
+
+    /* =====================================================================
+       INSTANT FEEDBACK & AUTO-GRADING
+       ===================================================================== */
+    function selectAnswer(qIndex, selectedOption) {
+      const q = quizData[qIndex];
+      const isCorrect = (selectedOption.toLowerCase() === q.correct.toLowerCase());
+
+      // Irreversible answer recording
+      userAnswers[qIndex] = {
+        selected: selectedOption,
+        isCorrect: isCorrect,
+        skipped: false
+      };
+
+      // Voice prompt & narration
+      if (isCorrect) {
+        speakText(`Correct! The answer is indeed ${q.correct}.`);
+      } else {
+        speakText(`Incorrect. The correct answer is ${q.correct}.`);
+      }
+
+      // Lock buttons and color them immediately
+      const container = document.getElementById("optionsContainer");
+      const buttons = container.querySelectorAll("button");
+      buttons.forEach(btn => {
+        btn.disabled = true;
+        btn.classList.add("locked");
+        const btnText = btn.querySelector("span").innerText.trim();
+
+        if (btnText === q.correct) {
+          btn.classList.add("bg-emerald-50", "border-emerald-500", "text-emerald-800");
+          btn.querySelector(".icon-indicator").innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600"></i>`;
+        } else if (btnText === selectedOption) {
+          btn.classList.add("bg-rose-50", "border-rose-500", "text-rose-800");
+          btn.querySelector(".icon-indicator").innerHTML = `<i class="fa-solid fa-circle-xmark text-rose-600"></i>`;
+        } else {
+          btn.classList.add("opacity-50", "border-slate-200");
+        }
+      });
+
+      showFeedbackUI(isCorrect, q);
+      updateLiveCounters();
+    }
+
+    function showFeedbackUI(isCorrect, questionObj) {
+      const feedbackCard = document.getElementById("feedbackCard");
+      const title = document.getElementById("feedbackTitle");
+      const enEl = document.getElementById("explanationEn");
+      const amEl = document.getElementById("explanationAm");
+
+      feedbackCard.classList.remove("hidden", "bg-emerald-50", "border-emerald-200", "bg-rose-50", "border-rose-200");
+
+      if (isCorrect) {
+        feedbackCard.classList.add("bg-emerald-50", "border-emerald-200");
+        title.className = "flex items-center gap-2.5 font-bold text-base text-emerald-800 mb-2";
+        title.innerHTML = `<i class="fa-solid fa-circle-check text-xl text-emerald-600"></i> <span>Brilliant! That is correct.</span>`;
+      } else {
+        feedbackCard.classList.add("bg-rose-50", "border-rose-200");
+        title.className = "flex items-center gap-2.5 font-bold text-base text-rose-800 mb-2";
+        title.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-xl text-rose-600"></i> <span>Not quite right. Correct Answer: <strong class="underline font-bold text-emerald-800 ml-1">${questionObj.correct}</strong></span>`;
+      }
+
+      enEl.innerText = questionObj.explanationEn;
+      amEl.innerText = questionObj.explanationAm;
+    }
+
+    /* =====================================================================
+       NAVIGATION (NEXT, PREV, SKIP, FINISH)
+       ===================================================================== */
+    function navigatePrev() {
+      if (currentIndex > 0) {
+        renderQuestion(currentIndex - 1);
+      }
+    }
+
+    function skipQuestion() {
+      if (!userAnswers[currentIndex]) {
+        userAnswers[currentIndex] = {
+          selected: null,
+          isCorrect: false,
+          skipped: true
+        };
+      }
+      speakText("Question skipped. Moving next.");
+      proceedToNext();
+    }
+
+    function navigateNext() {
+      proceedToNext();
+    }
+
+    function proceedToNext() {
+      if (currentIndex < quizData.length - 1) {
+        renderQuestion(currentIndex + 1);
+      } else {
+        showFinalResultsDashboard();
+      }
+    }
+
+    /* =====================================================================
+       RESULTS & TEACHER DASHBOARD
+       ===================================================================== */
+    function showFinalResultsDashboard() {
+      document.getElementById("screenQuiz").classList.add("hidden");
+      document.getElementById("screenResults").classList.remove("hidden");
+
+      let total = quizData.length;
+      let correct = 0;
+      let wrong = 0;
+      let skipped = 0;
+
+      // Group breakdowns
+      const partStats = {};
+
+      quizData.forEach((q, idx) => {
+        if (!partStats[q.part]) {
+          partStats[q.part] = { total: 0, correct: 0 };
+        }
+        partStats[q.part].total++;
+
+        const ans = userAnswers[idx];
+        if (ans && ans.isCorrect) {
+          correct++;
+          partStats[q.part].correct++;
+        } else if (ans && ans.skipped) {
+          skipped++;
+        } else {
+          wrong++;
+        }
+      });
+
+      const percentage = Math.round((correct / total) * 100);
+
+      document.getElementById("resStudentName").innerText = studentData.name;
+      document.getElementById("resStudentId").innerText = studentData.id;
+      document.getElementById("resFinalScore").innerText = `${percentage}%`;
+      document.getElementById("resRawScore").innerText = `${correct} / ${total}`;
+
+      // Change trophy appearance based on score
+      const trophy = document.getElementById("trophyBadge");
+      if (percentage >= 80) {
+        trophy.className = "w-20 h-20 mx-auto rounded-3xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-4xl mb-4 shadow-inner";
+        trophy.innerHTML = `<i class="fa-solid fa-trophy"></i>`;
+      } else if (percentage >= 50) {
+        trophy.className = "w-20 h-20 mx-auto rounded-3xl bg-amber-100 text-amber-600 flex items-center justify-center text-4xl mb-4 shadow-inner";
+        trophy.innerHTML = `<i class="fa-solid fa-award"></i>`;
+      } else {
+        trophy.className = "w-20 h-20 mx-auto rounded-3xl bg-rose-100 text-rose-600 flex items-center justify-center text-4xl mb-4 shadow-inner";
+        trophy.innerHTML = `<i class="fa-solid fa-book-open-reader"></i>`;
+      }
+
+      // Populate breakdown
+      const breakdownBox = document.getElementById("breakdownContainer");
+      breakdownBox.innerHTML = "";
+
+      for (const [partName, stat] of Object.entries(partStats)) {
+        const item = document.createElement("div");
+        const partPct = Math.round((stat.correct / stat.total) * 100);
+        item.className = "p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between";
+        item.innerHTML = `
+          <div>
+            <p class="font-bold text-slate-700 text-xs">${partName}</p>
+            <p class="text-xs text-slate-500">${stat.correct} out of ${stat.total} correct</p>
+          </div>
+          <span class="font-extrabold ${partPct >= 70 ? 'text-emerald-600' : 'text-amber-600'} text-sm">${partPct}%</span>
+        `;
+        breakdownBox.appendChild(item);
+      }
+
+      speakText(`Congratulations, ${studentData.name}. You scored ${correct} out of ${total}. That is ${percentage} percent.`);
+    }
+
+    /* =====================================================================
+       TEACHER EMAIL REPORT GENERATOR
+       ===================================================================== */
+    function generateReportText() {
+      let total = quizData.length;
+      let correct = 0;
+      quizData.forEach((q, idx) => {
+        if (userAnswers[idx] && userAnswers[idx].isCorrect) correct++;
+      });
+      const percentage = Math.round((correct / total) * 100);
+
+      let text = `OFFICIAL STUDENT QUIZ REPORT\n`;
+      text += `=====================================\n`;
+      text += `Assessment: Days of the Week Worksheet\n`;
+      text += `Student Name: ${studentData.name}\n`;
+      text += `Student ID: ${studentData.id}\n`;
+      text += `Date/Time: ${new Date().toLocaleString()}\n`;
+      text += `Overall Score: ${percentage}% (${correct}/${total})\n`;
+      text += `=====================================\n\n`;
+      text += `DETAILED ITEM RESPONSES:\n`;
+
+      quizData.forEach((q, i) => {
+        const ans = userAnswers[i];
+        const status = ans ? (ans.isCorrect ? "CORRECT" : ans.skipped ? "SKIPPED" : "INCORRECT") : "UNANSWERED";
+        const selected = ans && ans.selected ? ans.selected : "None";
+        text += `Q${i + 1} [${q.part}]: ${q.question}\n`;
+        text += `   Student Answer: ${selected} | Correct: ${q.correct} | Result: [${status}]\n`;
+      });
+
+      return text;
+    }
+
+    function sendScoreEmail() {
+      const teacherEmail = "mesayferedegn2@gmail.com";
+      const subject = encodeURIComponent(`Quiz Score: Days of the Week - ${studentData.name} (ID: ${studentData.id})`);
+      const body = encodeURIComponent(generateReportText());
+      const mailtoLink = `mailto:${teacherEmail}?subject=${subject}&body=${body}`;
+      window.location.href = mailtoLink;
+    }
+
+    function copyResultsSummary() {
+      const summary = generateReportText();
+      navigator.clipboard.writeText(summary).then(() => {
+        const copyBtnText = document.getElementById("copyBtnText");
+        copyBtnText.innerText = "Copied to Clipboard!";
+        setTimeout(() => {
+          copyBtnText.innerText = "Copy Report";
+        }, 2500);
+      }).catch(err => {
+        alert("Failed to copy. Please allow clipboard permissions.");
+      });
+    }
+
+    function retakeQuiz() {
+      for (let k in userAnswers) delete userAnswers[k];
+      currentIndex = 0;
+      document.getElementById("screenResults").classList.add("hidden");
+      document.getElementById("screenIntro").classList.remove("hidden");
+    }
+  </script>
+</body>
+</html>
+```eof
+
+I have generated `days_of_the_week_quiz.html`. Here is a summary of what has been implemented:
+
+- **Complete Curriculum Coverage:** All 26 questions across Parts 1 through 5 from the worksheet are integrated with strict alignment to the provided answer key.
+- **Auto-Grading & Instant Irreversible Feedback:** Once a student chooses an option, the button is instantly evaluated, locked to prevent duplicate attempts, and styled in green (correct) or red (incorrect) while highlighting the right answer.
+- **Bilingual Elaborated Explanations:** Every question provides an instructional explanation in both English and Amharic ($ማብራሪያ$).
+- **Dedicated British Narrator:** Web Speech synthesis configures a British accent narrator for questions, instructions, and feedback prompts.
+- **Teacher Submission & Dashboard:** Includes a student identification screen, category breakdown, a one-click `mailto:` launcher pre-addressed to `mesayferedegn2@gmail.com`, and a copy-to-clipboard report generator.
